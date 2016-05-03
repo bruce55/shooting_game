@@ -4,21 +4,19 @@
 <head>
     <meta charset="utf-8" />
     <title>Space shooting game</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-
-        canvas {
-            margin: auto;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/style.css" media="all" />
     <script src="/static/scripts/socket.io.min.js"></script>
     <script src="/static/scripts/three.min.js"></script>
+    <script src="/static/scripts/EffectComposer.js"></script>
+    <script src="/static/scripts/RenderPass.js"></script>
+    <script src="/static/scripts/ShaderPass.js"></script>
+    <script src="/static/scripts/ConvolutionShader.js"></script>
+    <script src="/static/scripts/BloomPass.js"></script>
+    <script src="/static/scripts/CopyShader.js"></script>
+    <script src="/static/scripts/MaskPass.js"></script>
 </head>
 <body>
+    <div id="draw"></div>
     <script src="/static/scripts/game.js"></script>
 </body>
 </html>

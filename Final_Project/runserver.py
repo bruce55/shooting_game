@@ -11,4 +11,4 @@ if __name__ == '__main__':
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    sioapp.run(app, HOST, PORT)
+    sioapp.run(app, '0.0.0.0', PORT)

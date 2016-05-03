@@ -1,0 +1,12 @@
+﻿body {
+    margin: 0;
+    overflow: hidden;
+    text-align:center;
+    background: #222
+}
+
+#draw {
+    display: inline-block;
+    font-size: 0;
+    box-shadow: 0 0 30px;
+}

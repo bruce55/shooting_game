@@ -1,5 +1,4 @@
-﻿/// <reference path="game.d.ts" />
-var camera, scene, renderer, controls;
+﻿var camera, scene, renderer, controls;
 var geometry, material, mesh;
 var players, playerGeometry, entityMaterial, entities, entityGeometry;
 var date = new Date();
@@ -79,9 +78,25 @@ function initGL() {
     players = {};
     entities = {};
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);
-    document.body.appendChild(renderer.domElement);
+    renderer.autoClear = false;
+
+    composer = new THREE.EffectComposer(renderer);
+    var renderpass = new THREE.RenderPass(scene, camera);
+    var bloompass = new THREE.BloomPass(3, 25, 4, 256);
+    composer.addPass(renderpass);
+    composer.addPass(bloompass);
+
+
+
+
+    var effectcopy = new THREE.ShaderPass(THREE.CopyShader);
+    effectcopy.renderToScreen = true;
+    composer.addPass(effectcopy);
+
+    document.getElementById('draw').appendChild(renderer.domElement);
+    clock = new THREE.Clock();
 }
 
 function initSocket() {
@@ -188,9 +203,12 @@ function animate() {
         if (!entities.hasOwnProperty(id)) continue;
 
         var entity = entities[id];
-        entity.mesh.position.set((entity.pos[0] + entity.vel[0] * delta_ticks)*scale, (entity.pos[1] + entity.vel[1] * delta_ticks)*scale, 0);
+        entity.mesh.position.set((entity.pos[0] + entity.vel[0] * delta_ticks) * scale + Math.random()*2 - 1, (entity.pos[1] + entity.vel[1] * delta_ticks) * scale + Math.random()*2 - 1, 0);
     }
-    renderer.render(scene, camera);
+    var delta = clock.getDelta();
+    renderer.clear();
+    composer.render(delta);
+    //renderer.render(scene, camera);
 }
 
 function move_update() {

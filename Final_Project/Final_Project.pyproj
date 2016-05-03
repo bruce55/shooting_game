@@ -45,14 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Final_Project\static\models\player.json" />
+    <Content Include="Final_Project\static\scripts\BloomPass.js" />
+    <Content Include="Final_Project\static\scripts\ConvolutionShader.js" />
+    <Content Include="Final_Project\static\scripts\CopyShader.js" />
+    <Content Include="Final_Project\static\scripts\EffectComposer.js" />
     <Content Include="Final_Project\static\scripts\game.d.ts" />
     <Content Include="Final_Project\static\scripts\game.js" />
+    <Content Include="Final_Project\static\scripts\MaskPass.js" />
+    <Content Include="Final_Project\static\scripts\RenderPass.js" />
+    <Content Include="Final_Project\static\scripts\ShaderPass.js" />
     <Content Include="Final_Project\static\scripts\socket.io.js" />
     <Content Include="Final_Project\static\scripts\socket.io.min.js" />
     <Content Include="Final_Project\static\scripts\three.d.ts" />
     <Content Include="Final_Project\static\scripts\three.js" />
     <Content Include="Final_Project\static\scripts\three.min.js" />
+    <Content Include="Final_Project\static\style.css" />
     <Content Include="Final_Project\templates\main.html" />
+    <Content Include="README.md" />
     <Content Include="requirements.txt" />
     <Content Include="Final_Project\static\scripts\_references.js" />
   </ItemGroup>
