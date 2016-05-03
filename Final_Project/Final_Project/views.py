@@ -19,6 +19,7 @@ def game_loop():
     fps = 20
     start = time.perf_counter()
     while True:
+        current_game.process_input()
         current_game.run_physics()
         frame += 1
         target = frame / fps

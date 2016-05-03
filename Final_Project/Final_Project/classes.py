@@ -76,6 +76,10 @@ class Game:
                     if player.collision_detection(entity):
                         pass
 
+    def process_input(self):
+        for player in self.players:
+            player.process_input()
+
 class Player(Entity):
     def __init__(self, sid, color, pos):
         self.sid = sid
