@@ -39,11 +39,17 @@
   <ItemGroup>
     <Folder Include="Final_Project\" />
     <Folder Include="Final_Project\static\" />
+    <Folder Include="Final_Project\static\models\" />
     <Folder Include="Final_Project\static\scripts\" />
     <Folder Include="Final_Project\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Final_Project\static\models\player.json" />
+    <Content Include="Final_Project\static\scripts\game.d.ts" />
     <Content Include="Final_Project\static\scripts\game.js" />
+    <Content Include="Final_Project\static\scripts\socket.io.js" />
+    <Content Include="Final_Project\static\scripts\socket.io.min.js" />
+    <Content Include="Final_Project\static\scripts\three.d.ts" />
     <Content Include="Final_Project\static\scripts\three.js" />
     <Content Include="Final_Project\static\scripts\three.min.js" />
     <Content Include="Final_Project\templates\main.html" />

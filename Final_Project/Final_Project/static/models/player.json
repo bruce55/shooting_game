@@ -1,0 +1,16 @@
+{
+    "normals":[0,1,0],
+    "name":"PlaneGeometry",
+    "uvs":[],
+    "faces":[32,1,2,0,0,0,0,32,2,3,0,0,0,0],
+    "metadata":{
+        "normals":1,
+        "uvs":0,
+        "faces":2,
+        "vertices":4,
+        "version":3,
+        "generator":"io_three",
+        "type":"Geometry"
+    },
+    "vertices":[0,-0,-2,-1,0,1,0,0,0.75,1,0,1]
+}

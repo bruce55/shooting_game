@@ -2,9 +2,10 @@ import random
 import numpy as np
 import eventlet
 import json
+from Final_Project.views import sioapp
 
 class Entity:
-    deceleration = 0.3
+    deceleration = 0.02
     def __init__(self, pos, size):
         self.pos = np.array(pos, 'float64')
         self.size = size
@@ -16,13 +17,24 @@ class Entity:
     def run_physics(self):
         if not self.static:
             self.pos += self.vel
-            mag = 1 - Entity.deceleration / np.linalg.norm(self.vel)
-            if mag < 0:
+            mag = 1 - self.deceleration / np.linalg.norm(self.vel)
+            if mag <= 0:
                 self.vel = np.array([0,0], 'float64')
                 self.static = True
             else:
                 self.vel *= mag
-
+            if self.pos[0] > 40:
+                self.vel[0] *= -1
+                self.pos[0] = 40
+            if self.pos[1] > 40:
+                self.vel[1] *= -1
+                self.pos[1] = 40
+            if self.pos[0] < 0:
+                self.vel[0] *= -1
+                self.pos[0] = 0
+            if self.pos[1] < 0:
+                self.vel[1] *= -1
+                self.pos[1] = 0
 
     def set_vel(self, vel):
         self.static = False
@@ -40,6 +52,8 @@ class Entity:
         vec = np.array([vec[0] * np.math.cos(rad) - vec[1] * np.math.sin(rad), vec[0] * np.math.sin(rad) + vec[1] * np.math.cos(rad)], 'float64')
         return vec
         
+class Bullet(Entity):
+    deceleration = 0.1
 
 class Game:
     def __init__(self, size):
@@ -58,7 +72,10 @@ class Game:
         self.players.append(player)
 
     def remove_player(self, player):
-        self.players.remove(player)
+        try:
+            self.players.remove(player)
+        except ValueError:
+            pass
 
     def remove_sid(self, sid):
         player = self.get_player(sid)
@@ -66,11 +83,16 @@ class Game:
     
     def generate_entities(self, n):
         for i in range(n):
-            self.entities.append(Entity([random.randint(0, self.size[0]), random.randint(0, self.size[1])], random.randint(2, 5)))
+            self.entities.append(Entity([random.randint(0, self.size[0]), random.randint(0, self.size[1])], random.randint(8, 12)))
 
     def run_physics(self):
         for player in self.players:
             player.run_physics()
+            for bullet in player.bullets:
+                bullet.run_physics()
+                if bullet.static:
+                    sioapp.emit('bullet_expire', [player.sid, id(bullet)])
+                    player.bullets.remove(bullet)
         for entity in self.entities:
             entity.run_physics()
             for player in self.players:
@@ -83,8 +105,22 @@ class Game:
             player.process_input()
 
     def dump_json(self):
-        players = [{'sid': player.sid, 'phys': (tuple(player.pos), tuple(player.vel), player.size, player.dir), 'color': player.color} for player in self.players]
-        entities = [{'id': id(entity), 'phys': (tuple(entity.pos), tuple(entity.vel), entity.size)} for entity in self.entities]
+        players = [{'sid': player.sid, 
+                    'phys': (tuple(player.pos), 
+                             tuple(player.vel), 
+                             player.size, 
+                             player.dir), 
+                    'color': player.color,
+                    'bullets': [{'id': id(bullet), 
+                                 'phys': (tuple(bullet.pos), 
+                                          tuple(bullet.vel), 
+                                          bullet.size)
+                                 } for bullet in player.bullets]} for player in self.players]
+        entities = [{'id': id(entity), 
+                     'phys': (tuple(entity.pos), 
+                              tuple(entity.vel), 
+                              entity.size)
+                     } for entity in self.entities]
         return json.dumps({'players': players, 'entities':entities})
 
 class Player(Entity):
@@ -99,6 +135,8 @@ class Player(Entity):
         self.dir = 0.0
         self.inputQueue = eventlet.Queue()
         self.hp = 100
+        self.bullets = []
+
     def get_session(self):
         return self.sid
 
@@ -111,7 +149,12 @@ class Player(Entity):
             if event[0] == 'dir':
                 self.dir = float(event[1])
             elif event[0] == 'accel':
-                accel = self.rotate_vec(np.array([0, 0.3], 'float64'), float(event[1]))
+                accel = self.rotate_vec(np.array([0, 0.05], 'float64'), float(self.dir))
                 self.set_vel(self.vel + accel)
-                if np.linalg.norm(self.vel) > 2:
-                    self.set_vel(2 / np.linalg.norm(self.vel) * self.vel)
+                if np.linalg.norm(self.vel) > 1:
+                    self.set_vel(1 / np.linalg.norm(self.vel) * self.vel)
+            elif event[0] == 'shoot':
+                bullet = Bullet(self.pos, 2)
+                vel = self.rotate_vec(np.array([0, 3], 'float64'), float(self.dir)) + self.vel
+                bullet.set_vel(vel)
+                self.bullets.append(bullet)

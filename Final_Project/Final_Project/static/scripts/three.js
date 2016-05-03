@@ -1,3 +1,4 @@
+/// <reference path="three.d.ts" />
 // File:src/Three.js
 
 /**
