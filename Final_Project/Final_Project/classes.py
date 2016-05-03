@@ -22,6 +22,7 @@ class Entity:
             else:
                 self.vel *= mag
 
+
     def set_vel(self, vel):
         self.static = False
         self.vel = vel
@@ -32,6 +33,11 @@ class Entity:
             return True
         else:
             return False
+    def rotate_vec(self, vec, rad):
+        """Rotate the vector clock-wise by the angle defined in rad"""
+        vec = np.array([vec[0]*np.math.cos(rad) - vec[1]*np.math.sin(rad), vec[0]*np.math.sin(rad) + vec[1]*np.math.cos(rad)], 'float64')
+        return vec
+        
 
 class Game:
     def __init__(self, size):
@@ -94,4 +100,7 @@ class Player(Entity):
             if event[0] == 'dir':
                 self.dir = float(event[1])
             elif event[0] == 'accel':
-                
+                accel = self.rotate_vec(np.array([0, 0.3], 'float64'), float(event[1]))
+                self.vel += accel
+                if np.linalg.norm(self.vel) > 2:
+                    self.vel = 2/np.linalg.norm(self.vel) * self.vel
