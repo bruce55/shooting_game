@@ -21,6 +21,7 @@ def game_loop():
     while True:
         current_game.process_input()
         current_game.run_physics()
+        sioapp.emit('game_snapshot', current_game.dump_json())
         frame += 1
         target = frame / fps
         passed = time.perf_counter() - start
@@ -35,12 +36,12 @@ def game_loop():
 def show_connection():
     global current_loop
     print('connected to', request.sid)
-    current_game.add_players(Player(request.sid, (255, 255, 255), np.array((0, 0))))
+    current_game.add_players(Player(request.sid, 'FF66FF', np.array((0, 0))))
     if current_loop == None:
         current_loop = threading.Thread(target=game_loop, args = ())
         current_loop.daemon = True
         current_loop.start()
-    emit('message', 'Hello, client {}!'.format(request.sid))
+    #emit('send_sid', request.sid)
     #emit('message', 'We pair you to client {}!'.format(request.sid), room = random.choice(sids))
 
 @sioapp.on('disconnect')

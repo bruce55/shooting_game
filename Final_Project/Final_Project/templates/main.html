@@ -10,6 +10,7 @@
     <script>
         var socket = io();
         socket.on('message', function (data) { console.log(data) });
+        socket.on('game_snapshot', function (data) { console.log(JSON.parse(data)) });
     </script>
 </body>
 </html>

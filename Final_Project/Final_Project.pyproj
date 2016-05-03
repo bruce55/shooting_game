@@ -43,6 +43,9 @@
     <Folder Include="Final_Project\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Final_Project\static\scripts\game.js" />
+    <Content Include="Final_Project\static\scripts\three.js" />
+    <Content Include="Final_Project\static\scripts\three.min.js" />
     <Content Include="Final_Project\templates\main.html" />
     <Content Include="requirements.txt" />
     <Content Include="Final_Project\static\scripts\_references.js" />

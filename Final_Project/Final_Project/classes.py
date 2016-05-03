@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import eventlet
+import json
 
 class Entity:
     deceleration = 0.3
@@ -15,7 +16,7 @@ class Entity:
     def run_physics(self):
         if not self.static:
             self.pos += self.vel
-            mag = 1 - Entity.deceleration/np.linalg.norm(self.vel)
+            mag = 1 - Entity.deceleration / np.linalg.norm(self.vel)
             if mag < 0:
                 self.vel = np.array([0,0], 'float64')
                 self.static = True
@@ -33,9 +34,10 @@ class Entity:
             return True
         else:
             return False
+
     def rotate_vec(self, vec, rad):
         """Rotate the vector clock-wise by the angle defined in rad"""
-        vec = np.array([vec[0]*np.math.cos(rad) - vec[1]*np.math.sin(rad), vec[0]*np.math.sin(rad) + vec[1]*np.math.cos(rad)], 'float64')
+        vec = np.array([vec[0] * np.math.cos(rad) - vec[1] * np.math.sin(rad), vec[0] * np.math.sin(rad) + vec[1] * np.math.cos(rad)], 'float64')
         return vec
         
 
@@ -80,6 +82,11 @@ class Game:
         for player in self.players:
             player.process_input()
 
+    def dump_json(self):
+        players = [{'sid': player.sid, 'phys': (tuple(player.pos), tuple(player.vel), player.size, player.dir), 'color': player.color} for player in self.players]
+        entities = [{'id': id(entity), 'phys': (tuple(entity.pos), tuple(entity.vel), entity.size)} for entity in self.entities]
+        return json.dumps({'players': players, 'entities':entities})
+
 class Player(Entity):
     def __init__(self, sid, color, pos):
         self.sid = sid
@@ -105,6 +112,6 @@ class Player(Entity):
                 self.dir = float(event[1])
             elif event[0] == 'accel':
                 accel = self.rotate_vec(np.array([0, 0.3], 'float64'), float(event[1]))
-                self.vel += accel
+                self.set_vel(self.vel + accel)
                 if np.linalg.norm(self.vel) > 2:
-                    self.vel = 2/np.linalg.norm(self.vel) * self.vel
+                    self.set_vel(2 / np.linalg.norm(self.vel) * self.vel)
